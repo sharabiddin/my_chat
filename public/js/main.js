@@ -3,15 +3,15 @@ const chatMessages = document.querySelector('.chat-messages');
 const roomName = document.getElementById('room-name');
 const userList = document.getElementById('users');
 
-// Get username and room from URL
-const { username, room } = Qs.parse(location.search, {
+// Get nickname and room from URL
+const { nickname, room } = Qs.parse(location.search, {
   ignoreQueryPrefix: true,
 });
 
 const socket = io();
 
 // Join chatroom
-socket.emit('joinRoom', { username, room });
+socket.emit('joinRoom', { nickname, room });
 
 // Get room and users
 socket.on('roomUsers', ({ room, users }) => {
@@ -55,7 +55,7 @@ function outputMessage(message) {
   div.classList.add('message');
   const p = document.createElement('p');
   p.classList.add('meta');
-  p.innerText = message.username;
+  p.innerText = message.nickname;
   p.innerHTML += `<span>${message.time}</span>`;
   div.appendChild(p);
   const para = document.createElement('p');
@@ -75,7 +75,7 @@ function outputUsers(users) {
   userList.innerHTML = '';
   users.forEach((user) => {
     const li = document.createElement('li');
-    li.innerText = user.username;
+    li.innerText = user.nickname;
     userList.appendChild(li);
   });
 }

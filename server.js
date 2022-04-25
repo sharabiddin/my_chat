@@ -17,24 +17,24 @@ const io = socketio(server);
 // Set static folder
 app.use(express.static(path.join(__dirname, 'public')));
 
-const botName = 'My Tiny Bot';
+const botName = 'Chat Bot';
 
 // Run when client connects
 io.on('connection', socket => {
-  socket.on('joinRoom', ({ username, room }) => {
-    const user = userJoin(socket.id, username, room);
+  socket.on('joinRoom', ({ nickname, room }) => {
+    const user = userJoin(socket.id, nickname, room);
 
     socket.join(user.room);
 
     // Welcome current user
-    socket.emit('message', formatMessage(botName, 'Welcome to My Chat!'));
+    socket.emit('message', formatMessage(botName, 'Welcome to MyChat!'));
 
     // Broadcast when a user connects
     socket.broadcast
       .to(user.room)
       .emit(
         'message',
-        formatMessage(botName, `${user.username} has joined the chat`)
+        formatMessage(botName, `${user.nickname} has joined the chat`)
       );
 
     // Send users and room info
@@ -48,7 +48,7 @@ io.on('connection', socket => {
   socket.on('chatMessage', msg => {
     const user = getCurrentUser(socket.id);
 
-    io.to(user.room).emit('message', formatMessage(user.username, msg));
+    io.to(user.room).emit('message', formatMessage(user.nickname, msg));
   });
 
   // Runs when client disconnects
@@ -58,7 +58,7 @@ io.on('connection', socket => {
     if (user) {
       io.to(user.room).emit(
         'message',
-        formatMessage(botName, `${user.username} has left the chat`)
+        formatMessage(botName, `${user.nickname} has left the chat`)
       );
 
       // Send users and room info
@@ -72,4 +72,5 @@ io.on('connection', socket => {
 
 const PORT = process.env.PORT || 3000;
 
-server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+server.listen(PORT, () => console.log(`Server running on http://Computer's IP:${PORT}`));
